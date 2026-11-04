@@ -26,7 +26,7 @@
   window.addEventListener('message', e => { if (e.data === 'xm-ready') ready(); });
   setTimeout(() => { const s = document.getElementById('slow'); if (s) s.textContent = '網路比較慢，再等一下下 🙏'; }, 8000);
   setTimeout(ready, 25000);
-  document.getElementById('app').src = APP + location.search;
+  document.getElementById('app').src = APP + (location.search || '?p=order');
 </script>
 </body>
 </html>
