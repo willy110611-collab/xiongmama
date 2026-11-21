@@ -40,8 +40,9 @@ button:disabled{cursor:default}
 .top h1{margin:0;font-size:26px;font-weight:900;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .back{min-height:50px;padding:0 16px;border-radius:99px;background:var(--ink);color:var(--surface);font-weight:900;font-size:18px;flex:none}
 .back:active,.ref:active{transform:scale(.94)}
-.ref{width:50px;height:50px;border-radius:50%;background:var(--surface);border:2px solid var(--line);font-size:22px;flex:none}
-.ref.spin span{display:inline-block;animation:spin .8s linear infinite}
+.ref{width:50px;height:50px;border-radius:50%;background:var(--surface);border:2px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;padding:0;color:var(--ink)}
+.ref svg{width:24px;height:24px;display:block;transform-origin:50% 50%}
+.ref.spin svg{animation:spin .8s linear infinite}
 .who{font-size:14px;color:var(--muted);margin:-4px 0 4px}
 .prog{position:fixed;top:0;left:0;right:0;height:4px;z-index:50;overflow:hidden;pointer-events:none}
 .prog i{position:absolute;top:0;bottom:0;width:40%;background:var(--go);animation:slide 1s ease-in-out infinite}
@@ -161,18 +162,18 @@ button:disabled{cursor:default}
 .orow:active{transform:scale(.97);border-color:var(--honey)}
 .orow b{font-size:22px;font-weight:900;margin-right:8px;overflow-wrap:anywhere}
 .orow small{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
-.orow .am{font-size:21px;font-weight:900;font-variant-numeric:tabular-nums}
+.orow .am{font-size:21px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
 .orow .its{grid-column:1 / -1;font-size:16px;color:var(--muted)}
 .orow.x{opacity:.55}
 .orow.x b{text-decoration:line-through}
 .orow.owe{border-color:var(--warn)}
-.tags{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.tg{font-size:14px;font-weight:700;border-radius:99px;padding:1px 10px;border:1.5px solid var(--line);color:var(--muted)}
+.tags{grid-column:1 / -1;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:4px}
+.tg{display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;line-height:1.3;border-radius:99px;padding:3px 10px;border:2px solid var(--line);color:var(--muted);white-space:nowrap}
 .tg.bad{color:var(--warn);border-color:var(--warn)}
 .tg.good{color:var(--go);border-color:var(--go)}
 .tg.star{color:#2a1c00;background:var(--honey);border-color:var(--honey)}
 .tg.owe{background:var(--warn);border-color:var(--warn);color:#fff}
-.tg.part{color:#8a5a0a;border-color:var(--honey);background:var(--honey-soft)}
+.tg.half{color:#8a5a0a;border-color:var(--honey);background:var(--honey-soft)}
 .empty{text-align:center;color:var(--muted);padding:30px 0}
 .morebtn{width:100%;min-height:54px;border-radius:14px;border:2px dashed var(--line);font-weight:900;font-size:17px;color:var(--muted);margin-top:4px}
 
@@ -205,8 +206,8 @@ button:disabled{cursor:default}
 .os-warn{font-size:15px;font-weight:700;color:var(--warn);margin-top:6px}
 .os-warn:empty{display:none}
 .acts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}
-.act{min-height:76px;border-radius:16px;border:2px solid var(--line);font-weight:900;font-size:19px;line-height:1.25;padding:6px 2px;transition:transform .12s,background .2s,border-color .2s,color .2s}
-.act small{display:block;font-size:13px;font-weight:700;color:var(--muted)}
+.act{min-height:76px;border-radius:16px;border:2px solid var(--line);font-weight:900;font-size:19px;line-height:1.25;padding:6px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center;transition:transform .12s,background .2s,border-color .2s,color .2s}
+.act small{display:block;font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;letter-spacing:-.02em}
 .act:active{transform:scale(.93)}
 .act.on{background:var(--go);border-color:var(--go);color:var(--go-ink)}
 .act.on small{color:inherit}
@@ -221,7 +222,8 @@ button:disabled{cursor:default}
 .gone{text-align:center;padding:20px 0 6px;font-weight:900;font-size:22px;color:var(--warn)}
 .os-foot{position:sticky;bottom:0;background:var(--surface);padding:10px 0 calc(16px + env(safe-area-inset-bottom));margin-top:10px}
 .os-foot .okbtn{margin-top:0}
-.busyveil{position:absolute;inset:0;background:rgba(255,255,255,.55);display:grid;place-items:center;z-index:3;font-weight:900;border-radius:24px 24px 0 0}
+.busyveil{position:fixed;inset:0;background:rgba(255,255,255,.7);display:grid;place-content:center;justify-items:center;gap:14px;z-index:60;font-weight:900;font-size:22px}
+.busyveil::before{content:"";width:46px;height:46px;border-radius:50%;border:5px solid var(--line);border-top-color:var(--go);animation:spin .7s linear infinite}
 @media (prefers-color-scheme: dark){.busyveil{background:rgba(0,0,0,.45)}}
 
 /* 對話框、提示 */
@@ -236,11 +238,12 @@ button:disabled{cursor:default}
 .toast.bad{background:var(--warn);color:#fff}
 
 /* 庫存 */
-.heroes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.heroes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
 .heroes.three{grid-template-columns:repeat(3,1fr);gap:8px}
-.hero{background:var(--surface);border-radius:16px;padding:12px 14px;border:2px solid transparent}
+.hero{background:var(--surface);border-radius:16px;padding:12px 14px;border:2px solid transparent;min-width:0}
 .hero small{display:block;font-size:14px;font-weight:700;color:var(--muted)}
-.hero b{display:block;font-size:30px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.hero b{display:block;font-size:30px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden}
+.hero.wide{grid-column:1 / -1}
 .hero.big b{font-size:40px}
 .hero i{font-style:normal;font-size:14px;font-weight:700;color:var(--muted)}
 .hero.bad{border-color:var(--warn)} .hero.bad b{color:var(--warn)}
@@ -272,7 +275,7 @@ button:disabled{cursor:default}
 .hbar .lb{font-size:17px;font-weight:700;white-space:nowrap}
 .hbar .tr{height:22px;position:relative}
 .hbar .tr i{display:block;height:100%;width:0;border-radius:0 4px 4px 0;background:var(--c1);transition:width .8s cubic-bezier(.2,.8,.2,1)}
-.hbar .vl{font-size:17px;font-weight:900;font-variant-numeric:tabular-nums;text-align:right}
+.hbar .vl{font-size:17px;font-weight:900;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
 .hbar .vl small{font-size:13px;color:var(--muted);font-weight:700;margin-left:2px}
 .legend{display:flex;gap:14px;font-size:14px;font-weight:700;color:var(--muted);margin-bottom:8px}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
@@ -285,7 +288,8 @@ button:disabled{cursor:default}
 .xl{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:4px}
 .xl button{min-height:40px;font-size:15px;font-weight:700;color:var(--muted);border-radius:10px}
 .xl button.sel{background:var(--ink);color:var(--surface)}
-.tip{font-size:15px;font-weight:700;margin-top:8px;min-height:24px;font-variant-numeric:tabular-nums}
+.tip{font-size:15px;font-weight:700;margin-top:8px;min-height:24px;font-variant-numeric:tabular-nums;display:flex;flex-wrap:wrap;gap:2px 10px;font-size:14px}
+.nw{white-space:nowrap}
 .stack{display:flex;gap:2px;height:34px;border-radius:8px;overflow:hidden;background:var(--surface)}
 .stack i{display:block;height:100%;flex:0 0 0%;transition:flex-basis .8s cubic-bezier(.2,.8,.2,1);min-width:0}
 .stack i.rest{background:var(--track);flex:1 1 0%}
@@ -293,22 +297,24 @@ button:disabled{cursor:default}
 .part{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;min-height:38px;font-size:17px;border-bottom:1px solid var(--line)}
 .part:last-child{border-bottom:0}
 .part i{width:14px;height:14px;border-radius:4px}
-.part b{font-variant-numeric:tabular-nums}
+.part b{font-variant-numeric:tabular-nums;white-space:nowrap}
 .part small{color:var(--muted);font-size:14px;min-width:38px;text-align:right;font-variant-numeric:tabular-nums}
 .part.sum{font-weight:900}
 .lrow{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;width:100%;text-align:left;background:var(--surface);border-radius:16px;padding:12px 14px;animation:chipin .28s both}
 .lrow b{font-size:21px;font-weight:900;overflow-wrap:anywhere}
-.lrow .r{font-size:20px;font-weight:900;font-variant-numeric:tabular-nums;text-align:right}
+.lrow .r{font-size:20px;font-weight:900;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
 .lrow small{grid-column:1 / -1;font-size:15px;color:var(--muted)}
 .lrow .mini{grid-column:1 / -1;height:6px;border-radius:99px;background:var(--track);overflow:hidden}
 .lrow .mini i{display:block;height:100%;width:0;background:var(--c1);border-radius:99px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
 .lrow .btns{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
 .lrow .btns.one{grid-template-columns:1fr}
 .lrow .btns button{min-height:48px;border-radius:12px;border:2px solid var(--line);font-weight:900;font-size:16px}
-.ing{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:baseline;min-height:46px;border-bottom:1px solid var(--line);font-size:19px;font-weight:700}
+.ing{display:grid;grid-template-columns:minmax(0,1fr) 5.8rem 1.6rem 4.6rem;column-gap:6px;align-items:baseline;min-height:46px;padding:6px 0;border-bottom:1px solid var(--line);font-size:19px;font-weight:700}
 .ing:last-child{border-bottom:0}
-.ing b{font-size:24px;font-weight:900;font-variant-numeric:tabular-nums}
-.ing b small{font-size:15px;color:var(--muted);margin-left:3px}
+.ing .nm{overflow-wrap:anywhere}
+.ing .v{font-size:24px;font-weight:900;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.ing .u{font-size:15px;color:var(--muted);white-space:nowrap}
+.ing .j{font-size:14px;color:var(--muted);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 
 /* 開場、送出成功 */
 .boot{min-height:70vh;display:grid;place-items:center;text-align:center;padding:24px}
@@ -321,6 +327,9 @@ button:disabled{cursor:default}
 .ok svg{width:120px;height:120px}
 .ok path{stroke:var(--go-ink);stroke-width:9;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:90;stroke-dashoffset:90}
 .ok.show path{animation:draw .4s .35s forwards}
+.ok.red{background:var(--warn)}
+.ok.red path{stroke:#fff;stroke-dasharray:120;stroke-dashoffset:120}
+.ok.red p{color:#fff}
 .ok p{position:absolute;bottom:22%;left:0;right:0;text-align:center;color:var(--go-ink);font-weight:900;font-size:22px;opacity:0}
 .ok.show p{animation:rise .3s .6s forwards}
 .bit{position:fixed;z-index:31;font-size:30px;pointer-events:none;left:0;top:0}
@@ -352,7 +361,7 @@ button:disabled{cursor:default}
   <div class="top" id="top" hidden>
     <button type="button" class="back" id="goBack" hidden>‹ 返回</button>
     <h1 id="ttl">熊媽媽訂單</h1>
-    <button type="button" class="ref" id="refBtn" aria-label="重新整理"><span>⟳</span></button>
+    <button type="button" class="ref" id="refBtn" aria-label="重新整理"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg></button>
   </div>
 
   <!-- 開場 -->
@@ -467,12 +476,12 @@ button:disabled{cursor:default}
   </section>
 
   <section id="pMonth" class="pg" hidden>
-    <div class="heroes three">
+    <div class="heroes">
       <div class="hero"><small>訂單</small><b id="mnOrders">0</b><i>張</i></div>
       <div class="hero"><small>售出</small><b id="mnPacks">0</b><i>包</i></div>
-      <div class="hero"><small>營收</small><b id="mnRev">$0</b></div>
+      <div class="hero wide"><small>營收</small><b id="mnRev">$0</b></div>
     </div>
-    <div class="panel"><h3>各品項銷量</h3><p class="cap" id="mnCap"></p><div class="hbar" id="mnFlav"></div></div>
+    <div class="panel" style="margin-top:16px"><h3>各品項銷量</h3><p class="cap" id="mnCap"></p><div class="hbar" id="mnFlav"></div></div>
     <div class="panel"><h3>近 6 個月營收</h3><p class="cap">點月份看數字（依訂購日，含運費，不含招待和取消）</p>
       <div class="cols" id="mnCols"></div><div class="xl" id="mnX"></div><div class="tip" id="mnTip"></div></div>
   </section>
@@ -559,7 +568,7 @@ button:disabled{cursor:default}
 
 <div class="ask" id="ask" hidden><div class="in"><p id="askTx"></p><div class="two"><button type="button" id="askNo">算了</button><button type="button" class="yes" id="askOk">確定</button></div></div></div>
 <div class="toast" id="toast" role="status"></div>
-<div class="ok" id="ok" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M24 52 L43 70 L78 32"/></svg><p id="okTx">已新增訂單</p></div>
+<div class="ok" id="ok" aria-hidden="true"><svg viewBox="0 0 100 100"><path id="okPath" d="M24 52 L43 70 L78 32"/></svg><p id="okTx">已新增訂單</p></div>
 
 <script>
 /* ◆ 設定　正式版 /exec 網址（跟訂購網頁同一個）；LIFF ID 從 /exec?p=cfg 拿，不用改這個檔案 */
@@ -593,6 +602,21 @@ function ask(text, okText, red) {
 function flav(col) { return (DATA.flavors.filter(function (f) { return f.col === Number(col); })[0]) || { col: col, label: '品項' + col, e: '🥟', price: 0 }; }
 function itemsText(q, sep) { return DATA.flavors.filter(function (f) { return q[f.col]; }).map(function (f) { return f.label + q[f.col]; }).join(sep || '・'); }
 function busy(on) { BUSY += on ? 1 : -1; if (BUSY < 0) BUSY = 0; $('prog').hidden = !BUSY; $('refBtn').classList.toggle('spin', !!BUSY); }
+
+/* ◆ fitNums　大數字（營收、毛利…）放不下就自動縮小字，永遠一行 */
+function fitNums() {
+  var els = document.querySelectorAll('.hero b');
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i]; el.style.fontSize = '';
+    if (!el.offsetParent) continue;
+    var s = parseFloat(getComputedStyle(el).fontSize);
+    while (el.scrollWidth > el.clientWidth + 1 && s > 14) { s -= 1; el.style.fontSize = s + 'px'; }
+  }
+}
+function fitSoon() { (window.requestAnimationFrame || setTimeout)(fitNums); }
+window.addEventListener('resize', fitSoon);
+try { document.fonts.ready.then(fitSoon); } catch (e) {}
+function nw(t) { return '<span class="nw">' + t + '</span>'; }
 
 /* ◆ api　呼叫 Apps Script（點選.gs 的 liffApi_） */
 function api(name, args) {
@@ -680,6 +704,7 @@ function go(v, same) {
   if (/^(more|month|profit|prep|sleep|promo)$/.test(v)) loadMore(v);
   if (CUR && $('os').classList.contains('open')) reloadSheet();
   if (changed && !same) buzz();
+  fitSoon();
 }
 
 /* ================= 首頁 ================= */
@@ -959,9 +984,11 @@ function afterCreate(d) {
     }, sent ? 1300 : 1500);
   });
 }
-function showOk(text) {
+function showOk(text, red) {
   $('okTx').textContent = text || '';
-  var ok = $('ok'); ok.classList.remove('show'); void ok.offsetWidth; ok.classList.add('show'); buzz([20, 60, 30]);
+  $('okPath').setAttribute('d', red ? 'M32 32 L68 68 M68 32 L32 68' : 'M24 52 L43 70 L78 32');
+  var ok = $('ok'); ok.classList.remove('show'); ok.classList.toggle('red', !!red); void ok.offsetWidth; ok.classList.add('show'); buzz(red ? [60, 80, 60] : [20, 60, 30]);
+  if (red) { setTimeout(function () { ok.classList.remove('show'); }, 1100); return; }
   if (calm || !document.body.animate) return;
   var cx = innerWidth / 2, cy = innerHeight / 2, set = ['🥟', '🥟', '✨', '🥟', '🥬', '🦐', '🥟', '✨', '🌽', '🥟'];
   set.forEach(function (e, i) {
@@ -1029,10 +1056,10 @@ function tagsOf(o) {
   if (owes(o)) t += '<span class="tg owe">已取貨未付款' + (o.sday ? '・' + o.sday + ' 天' : '') + '</span>';
   else {
     t += o.gift ? '<span class="tg good">🎁 招待</span>' : o.paid ? '<span class="tg good">已付款</span>' : '<span class="tg bad">未付款</span>';
-    if (o.zone === 'wait') t += '<span class="tg part">等匯款</span>';
-    t += o.shipped ? '<span class="tg good">已取貨</span>' : o.full ? '<span class="tg good">已備妥</span>' : o.done ? '<span class="tg part">已包 ' + o.done + '/' + o.tot + '</span>' : '<span class="tg">準備中</span>';
+    if (o.zone === 'wait') t += '<span class="tg half">等匯款</span>';
+    t += o.shipped ? '<span class="tg good">已取貨</span>' : o.full ? '<span class="tg good">已備妥</span>' : o.done ? '<span class="tg half">已包 ' + o.done + '/' + o.tot + '</span>' : '<span class="tg">準備中</span>';
   }
-  if (o.rep && !o.paid) t += '<span class="tg part">📨 匯款回報 ' + esc(o.rep) + '</span>';
+  if (o.rep && !o.paid) t += '<span class="tg half">📨 匯款回報 ' + esc(o.rep) + '</span>';
   if (o.freeze) t += '<span class="tg">🏪 7-11' + (o.store ? ' ' + esc(o.store) : '・門市未填') + '</span>';
   if (o.due && !o.shipped) t += '<span class="tg">📅 ' + esc(o.due) + ' 交</span>';
   if (o.note) t += '<span class="tg">📝 ' + esc(o.note.slice(0, 24)) + '</span>';
@@ -1153,20 +1180,55 @@ function wireSheet() {
   seg.querySelectorAll('button').forEach(function (b) { b.onclick = function () { ED.freeze = b.dataset.v === '7-11'; buzz(); setSeg(); sheetHead(true); }; });
   setSeg();
 }
-/* ◆ doAct　訂單按鈕（先存修改，再做動作） */
+/* ◆ doAct　訂單按鈕（先存修改，再做動作）
+   付款、取貨、優先：畫面先變（不用等），後台慢慢存，存失敗會改回來並提示
+   取消、恢復：等存好才算，中間整個畫面顯示「取消中…」，成功會震動＋跳出大大的結果 */
+var OPT = {
+  paid:   function (o) { o.paid = true; },
+  unpaid: function (o) { o.paid = false; o.gift = false; },
+  gift:   function (o) { o.gift = true; },
+  pri:    function (o) { o.pri = true; },
+  unpri:  function (o) { o.pri = false; },
+  ship:   function (o) { o.shipped = true; o.pri = false; },
+  unship: function (o) { o.shipped = false; }
+};
+var ACTQ = Promise.resolve();
+function actSync(no, a) {
+  var p = ACTQ.then(function () { return api('act', { no: no, a: a }); });
+  ACTQ = p.catch(function () {});
+  return p;
+}
 function doAct(a) {
   var o = CUR, pre = dirty() ? saveEdit(true) : Promise.resolve(true);
   pre.then(function (ok) {
     if (!ok) return;
-    veil(true);
-    return api('act', { no: o.no, a: a }).then(function (d) {
-      veil(false); buzz(25); toast(d.msg); CUR = findOrder(o.no) || CUR; loadEdit(); renderSheet(); go(VIEW, true);
+    if (OPT[a]) {
+      var back = Object.assign({}, o);
+      OPT[a](o); buzz(25); renderSheet(); go(VIEW, true);
+      return actSync(o.no, a).then(function (d) {
+        toast(d.msg);
+        if (CUR && CUR.no === o.no && !dirty()) { CUR = findOrder(o.no) || CUR; loadEdit(); renderSheet(); }
+        go(VIEW, true);
+      }, function (e) {
+        Object.assign(o, back);
+        if (CUR && CUR.no === o.no) renderSheet();
+        go(VIEW, true); buzz(60); toast('⚠️ 沒存成功，已經改回來：' + e.message, true);
+      });
+    }
+    veil(true, a === 'cancel' ? '取消中…' : a === 'restore' ? '恢復中…' : '處理中…');
+    return actSync(o.no, a).then(function (d) {
+      veil(false);
+      if (a === 'cancel') showOk('已取消訂單', true);
+      else if (a === 'restore') showOk('已恢復訂單');
+      else buzz(25);
+      toast(d.msg); CUR = findOrder(o.no) || CUR; loadEdit(); renderSheet(); go(VIEW, true);
     });
-  }).catch(function (e) { veil(false); toast('⚠️ ' + e.message, true); });
+  }).catch(function (e) { veil(false); buzz(60); toast('⚠️ ' + e.message, true); });
 }
-function veil(on) {
-  var s = $('os').querySelector('.sheet'), v = s.querySelector('.busyveil');
-  if (on && !v) { v = document.createElement('div'); v.className = 'busyveil'; v.textContent = '處理中…'; s.appendChild(v); }
+function veil(on, text) {
+  var v = document.querySelector('.busyveil');
+  if (on && !v) { v = document.createElement('div'); v.className = 'busyveil'; document.body.appendChild(v); }
+  if (on) v.textContent = text || '處理中…';
   if (!on && v) v.remove();
 }
 /* ◆ saveEdit　存修改；keepOpen＝存完面板不關 */
@@ -1247,6 +1309,7 @@ function renderMoreView(v) {
   $('mPromo').textContent = pn ? pn + ' 張要處理' : '';
   if (v === 'month') renderMonth(); else if (v === 'profit') renderProfit(); else if (v === 'prep') renderPrep();
   else if (v === 'sleep') renderSleep(); else if (v === 'promo') renderPromo();
+  fitSoon();
 }
 function undoShow() {
   var u = (MORE && MORE.undo) || DATA.undo;
@@ -1295,7 +1358,7 @@ function renderMonth() {
   hbars($('mnFlav'), DATA.flavors.filter(function (f) { return M.flav[f.col]; }).map(function (f) { return [f.e + ' ' + f.label, M.flav[f.col]]; })
     .sort(function (a, b) { return b[1] - a[1]; }), '包');
   monthCols('mnCols', 'mnX', L, MSEL, 'amt', null, function (i) { MSEL = i; buzz(); renderMonth(); });
-  var S2 = L[MSEL]; $('mnTip').textContent = S2.m + '　營收 ' + money(S2.amt) + '　' + S2.orders + ' 張單　' + S2.bags + ' 包';
+  var S2 = L[MSEL]; $('mnTip').innerHTML = nw(esc(S2.m)) + nw('營收 ' + money(S2.amt)) + nw(S2.orders + ' 張單') + nw(S2.bags + ' 包');
 }
 var CATS = ['食材', '包材', '設備', '行銷', '雜支', '多箱運費'];
 function renderProfit() {
@@ -1325,7 +1388,7 @@ function renderPrep() {
   var P = MORE.prep;
   $('ppLack').textContent = P.total; $('ppN').textContent = P.items.length;
   $('ppIng').innerHTML = P.items.length ? P.items.map(function (x) {
-    return '<div class="ing"><span>' + esc(x.name) + '</span><b>' + x.v.toLocaleString('en-US') + '<small>' + esc(x.unit) + (x.jin ? '（約 ' + x.jin + ' 斤）' : '') + '</small></b></div>';
+    return '<div class="ing"><span class="nm">' + esc(x.name) + '</span><b class="v">' + x.v.toLocaleString('en-US') + '</b><span class="u">' + esc(x.unit) + '</span><span class="j">' + (x.jin ? '約 ' + x.jin + ' 斤' : '') + '</span></div>';
   }).join('') : '<div class="empty">' + (P.total ? '還沒填配方' : '👍 庫存夠，不用買料') + '</div>';
   if (P.miss.length) $('ppIng').insertAdjacentHTML('beforeend', '<div class="note">⚠️ 沒填配方：' + esc(P.miss.join('、')) + '（試算表「設定」分頁）</div>');
   hbars($('ppFlav'), DATA.flavors.filter(function (f) { return P.need[f.col]; }).map(function (f) { return [f.e + ' ' + f.label, P.need[f.col]]; })
@@ -1351,7 +1414,7 @@ function renderPromo() {
   L.forEach(function (x, i) {
     var d = document.createElement('div'); d.className = 'lrow'; d.style.animationDelay = Math.min(i * 40, 400) + 'ms';
     d.innerHTML = '<b>' + esc(x.name) + '</b><span class="r">' + (x.paid ? '退 ' : '收 ') + money(x.paid ? x.off : x.pay) + '</span>' +
-      '<small>' + esc(x.date) + ' 訂・' + esc(x.promo) + '・原價 ' + money(x.orig) + ' → 折後 ' + money(x.pay) + (x.paid ? '・已付款' : '・還沒付款') + '</small>' +
+      '<small>' + nw(esc(x.date) + ' 訂') + '・' + nw(esc(x.promo)) + '・' + nw('原價 ' + money(x.orig)) + ' → ' + nw('折後 ' + money(x.pay)) + '・' + nw(x.paid ? '已付款' : '還沒付款') + '</small>' +
       (x.paid ? '<div class="btns"><button type="button" data-k="refund">已退 ' + money(x.off) + '</button><button type="button" data-k="ok">本來就付折後價</button></div>'
               : '<div class="btns one"><button type="button" data-k="ok">已告訴顧客新金額</button></div>');
     d.querySelectorAll('button').forEach(function (b) {
