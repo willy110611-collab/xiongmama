@@ -27,6 +27,7 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);font-weight:500;font-size:18px;line-height:1.5}
 button,input{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none;padding:0}
@@ -618,6 +619,38 @@ window.addEventListener('resize', fitSoon);
 try { document.fonts.ready.then(fitSoon); } catch (e) {}
 function nw(t) { return '<span class="nw">' + t + '</span>'; }
 
+/* ◆ fixFont　手機把字放大時，畫面維持原本設計的大小（LINE 安卓版會跟著手機字體放大） */
+function fixFont(force) {
+  try {
+    var p = document.createElement('div');
+    p.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;font-size:100px;line-height:1;padding:0;margin:0;border:0';
+    p.textContent = 'X';
+    document.body.appendChild(p);
+    var r = force || p.getBoundingClientRect().height / 100;
+    p.parentNode.removeChild(p);
+    if (!(r > 1.03 || r < 0.97)) return 1;
+    var px = function (v) { var m = /^([\d.]+)px$/.exec(v || ''); return m ? (Number(m[1]) / r).toFixed(2) + 'px' : ''; };
+    var walk = function (rules) {
+      for (var i = 0; i < rules.length; i++) {
+        var x = rules[i];
+        if (x.cssRules) walk(x.cssRules);
+        if (x.style && x.style.fontSize) { var n = px(x.style.fontSize); if (n) x.style.fontSize = n; }
+      }
+    };
+    for (var s = 0; s < document.styleSheets.length; s++) { try { walk(document.styleSheets[s].cssRules); } catch (e) {} }
+    var fixEl = function (el) {
+      if (el.nodeType !== 1) return;
+      if (el.style && el.style.fontSize && !el.dataset.ff) { var n = px(el.style.fontSize); if (n) { el.style.fontSize = n; el.dataset.ff = '1'; } }
+      var all = el.querySelectorAll ? el.querySelectorAll('[style*="font-size"]') : [];
+      for (var k = 0; k < all.length; k++) fixEl(all[k]);
+    };
+    fixEl(document.body);
+    if (window.MutationObserver) new MutationObserver(function (ms) {
+      ms.forEach(function (m) { for (var j = 0; j < m.addedNodes.length; j++) fixEl(m.addedNodes[j]); });
+    }).observe(document.body, { childList: true, subtree: true });
+    return r;
+  } catch (e) { return 1; }
+}
 /* ◆ api　呼叫 Apps Script（點選.gs 的 liffApi_） */
 function api(name, args) {
   var body = Object.assign({ api: name, idToken: TOKEN }, args || {});
@@ -973,6 +1006,7 @@ function afterCreate(d) {
     showOk(sent ? '已新增訂單，回到群組' : '已新增訂單');
     setTimeout(function () {
       if (sent) { try { liff.closeWindow(); return; } catch (e) {} }
+      api('boot').then(function (n) { DATA = n; saveCache(); if (VIEW === 'home') renderHome(); }).catch(function () {});   // 背景補抓最新資料
       $('ok').classList.remove('show');
       $('pDone').innerHTML = '<div class="done"><div style="font-size:54px">✅</div><h2>已新增訂單</h2><div style="font-weight:900;font-size:20px">' + esc(d.no) + '</div>' +
         '<p>' + (CAN_SEND ? '這次沒辦法替你在群組發話（從「最近使用的服務」打開會這樣），' : '') + '群組下次有人打指令時，會顯示「🆕 有新單」。</p>' +
@@ -1240,13 +1274,28 @@ function saveEdit(keepOpen) {
   if (ED.freeze && ED.rtel && !/^09\d{8}$/.test(ED.rtel)) { toast('收件人手機要 09 開頭、共 10 碼', true); return Promise.resolve(false); }
   if (ED.due && !/^\d{1,2}\s*\/\s*\d{1,2}$/.test(String(ED.due).trim())) { toast('交貨日請寫成 11/28 這樣', true); return Promise.resolve(false); }
   var q = {}; DATA.flavors.forEach(function (f) { q[f.col] = ED.q[f.col] || 0; });
-  veil(true);
-  return api('save', { no: CUR.no, ch: { name: ED.name, q: q, freeze: ED.freeze, store: ED.store, code: ED.code, rname: ED.rname, rtel: ED.rtel, due: ED.due, note: ED.note } })
-    .then(function (d) {
-      veil(false); toast(d.msg); CUR = findOrder(CUR.no) || CUR; loadEdit();
-      if (keepOpen) renderSheet(); else closeSheet();
-      go(VIEW, true); return true;
-    }, function (e) { veil(false); toast('⚠️ ' + e.message, true); return false; });
+  var o = CUR, back = JSON.parse(JSON.stringify(o)), amt = estAmt();
+  var ch = { name: ED.name, q: q, freeze: ED.freeze, store: ED.store, code: ED.code, rname: ED.rname, rtel: ED.rtel, due: ED.due, note: ED.note };
+  // 畫面先改好（不用等），後台排隊慢慢存；存失敗改回來並提示
+  o.name = ED.name; o.freeze = ED.freeze; o.store = ED.store; o.code = ED.code; o.rname = ED.rname; o.rtel = ED.rtel; o.due = ED.due; o.note = ED.note;
+  o.q = {}; o.m = o.m || {}; o.tot = 0; o.done = 0;
+  for (var k in q) if (q[k] > 0) { o.q[k] = q[k]; o.m[k] = Math.min(o.m[k] || 0, q[k]); o.tot += q[k]; o.done += o.m[k]; } else delete o.m[k];
+  o.full = o.tot > 0 && o.done >= o.tot; o.amt = amt;
+  loadEdit(); buzz(20);
+  if (keepOpen) renderSheet(); else closeSheet();
+  go(VIEW, true);
+  var p = ACTQ.then(function () { return api('save', { no: o.no, ch: ch }); });
+  ACTQ = p.catch(function () {});
+  p.then(function (d) {
+    toast(d.msg);
+    if (CUR && CUR.no === o.no && !dirty()) { CUR = findOrder(o.no) || CUR; loadEdit(); renderSheet(); }
+    go(VIEW, true);
+  }, function (e) {
+    Object.assign(o, back);
+    if (CUR && CUR.no === o.no) { CUR = o; loadEdit(); renderSheet(); }
+    go(VIEW, true); buzz(60); toast('⚠️ 沒存成功，已經改回來：' + e.message, true);
+  });
+  return Promise.resolve(true);
 }
 function closeSheet() { $('os').classList.remove('open'); CUR = null; ED = null; ASKCX = false; }
 function doneSheet() {
@@ -1457,6 +1506,7 @@ function init() {
     if (!dirty()) return closeSheet();
     ask('改的東西還沒存，要存起來嗎？', '存起來').then(function (y) { if (y) saveEdit(false); else closeSheet(); });
   };
+  fixFont();
   start();
 }
 init();
