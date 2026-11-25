@@ -28,6 +28,9 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{overflow-x:hidden;max-width:100%}
+img,svg,video,canvas{max-width:100%}
+.wrap *{min-width:0;overflow-wrap:anywhere}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);font-weight:500;font-size:18px;line-height:1.5}
 button,input{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none;padding:0}
@@ -651,6 +654,24 @@ function fixFont(force) {
     return r;
   } catch (e) { return 1; }
 }
+/* ◆ fitWidth　整個畫面縮到手機寬度裡：窄手機、把「顯示大小」調大的手機，照比例縮小，不會超出視窗 */
+var BASE_W = 400;   // 照這個寬度設計；覺得還是太大就改大（例如 430），太小就改小
+function fitWidth() {
+  try {
+    var html = document.documentElement;
+    html.style.zoom = '';
+    var w = window.innerWidth || html.clientWidth;
+    var z = Math.min(1, w / BASE_W);
+    if (z < 1) html.style.zoom = z;
+    var sw = html.scrollWidth, cw = html.clientWidth;
+    if (sw > cw + 1) { z = z * cw / sw; html.style.zoom = z; }   // 還是有東西超出去，就再縮到剛好
+  } catch (e) {}
+}
+var FITW = 0;
+function fitWidthSoon() { clearTimeout(FITW); FITW = setTimeout(fitWidth, 60); }
+window.addEventListener('resize', fitWidthSoon);
+window.addEventListener('orientationchange', fitWidthSoon);
+
 /* ◆ api　呼叫 Apps Script（點選.gs 的 liffApi_） */
 function api(name, args) {
   var body = Object.assign({ api: name, idToken: TOKEN }, args || {});
@@ -738,6 +759,7 @@ function go(v, same) {
   if (CUR && $('os').classList.contains('open')) reloadSheet();
   if (changed && !same) buzz();
   fitSoon();
+  fitWidthSoon();
 }
 
 /* ================= 首頁 ================= */
@@ -1507,6 +1529,7 @@ function init() {
     ask('改的東西還沒存，要存起來嗎？', '存起來').then(function (y) { if (y) saveEdit(false); else closeSheet(); });
   };
   fixFont();
+  fitWidth();
   start();
 }
 init();
